@@ -80,7 +80,7 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 
 	local label = Instance.new("TextLabel", tabButton)
 	label.Size = UDim2.new(1, 0, 1, 0)
-	label.Position = UDim2.new(0, 0, 0, 0)
+	label.Position = UDim2.new(0, 0, 0, 1)
 	label.BackgroundTransparency = 1
 	label.Text = name
 	label.Font = Enum.Font.GothamBlack
@@ -265,34 +265,16 @@ function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: n
 	local dragging = false
 
 	sliderBack.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = true
-
-		local gui = sliderBack:FindFirstAncestorWhichIsA("ScreenGui")
-		if gui then
-			for _, f in ipairs(gui:GetDescendants()) do
-				if f:IsA("Frame") then
-					f.Active = false
-				end
-			end
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
 		end
-	end
-end)
+	end)
 
 	sliderBack.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = false
-
-		local gui = sliderBack:FindFirstAncestorWhichIsA("ScreenGui")
-		if gui then
-			for _, f in ipairs(gui:GetDescendants()) do
-				if f:IsA("Frame") then
-					f.Active = true
-				end
-			end
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
 		end
-	end
-end)
+	end)
 
 	game:GetService("UserInputService").InputChanged:Connect(function(input)
 		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
