@@ -265,17 +265,34 @@ function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: n
 	local dragging = false
 
 	sliderBack.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+
+		local gui = sliderBack:FindFirstAncestorWhichIsA("ScreenGui")
+		if gui then
+			for _, f in ipairs(gui:GetDescendants()) do
+				if f:IsA("Frame") then
+					f.Active = false
+				end
+			end
 		end
-	end)
+	end
+end)
 
 	sliderBack.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = false
-		end
-	end)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
 
+		local gui = sliderBack:FindFirstAncestorWhichIsA("ScreenGui")
+		if gui then
+			for _, f in ipairs(gui:GetDescendants()) do
+				if f:IsA("Frame") then
+					f.Active = true
+				end
+			end
+		end
+	end
+end)
 	game:GetService("UserInputService").InputChanged:Connect(function(input)
 		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
 			local relX = math.clamp(input.Position.X - sliderBack.AbsolutePosition.X, 0, sliderBack.AbsoluteSize.X)
