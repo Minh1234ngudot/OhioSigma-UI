@@ -8,10 +8,12 @@ local tabCount = 0
 local tabBar: Frame = nil
 
 function OhioSigma:CreateWindow(config: { Name: string })
-	local screenGui = Instance.new("ScreenGui")
+	self._mainFrame = frame
+        local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = config.Name or "OhioSigma_Hub"
 	screenGui.ResetOnSpawn = false
 	screenGui.Parent = player:WaitForChild("PlayerGui")
+        
 
 	local frame = Instance.new("Frame")
 	frame.Size = UDim2.new(0, 450, 0, 300)
@@ -265,22 +267,23 @@ function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: n
 	local dragging = false
 
 	sliderBack.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-                        if frame then
-	                    frame.Active = false
-                        end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		if OhioSigma._mainFrame then
+			OhioSigma._mainFrame.Draggable = false
 		end
-	end)
+	end
+end)
 
-	sliderBack.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-                        if frame then
-	                    frame.Active = false
-                        end
+        sliderBack.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+		if OhioSigma._mainFrame then
+			OhioSigma._mainFrame.Draggable = true
 		end
-	end)
+	end
+end)
+
 
 	game:GetService("UserInputService").InputChanged:Connect(function(input)
 		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
