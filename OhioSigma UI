@@ -8,7 +8,6 @@ local tabCount = 0
 local tabBar: Frame = nil
 
 function OhioSigma:CreateWindow(config: { Name: string })
-	self._mainFrame = frame
         local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = config.Name or "OhioSigma_Hub"
 	screenGui.ResetOnSpawn = false
@@ -269,17 +268,29 @@ function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: n
 	sliderBack.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = true
-		if OhioSigma._mainFrame then
-			OhioSigma._mainFrame.Draggable = false
+
+		local gui = sliderBack:FindFirstAncestorWhichIsA("ScreenGui")
+		if gui then
+			for _, f in ipairs(gui:GetDescendants()) do
+				if f:IsA("Frame") then
+					f.Active = false
+				end
+			end
 		end
 	end
 end)
 
-        sliderBack.InputEnded:Connect(function(input)
+       sliderBack.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = false
-		if OhioSigma._mainFrame then
-			OhioSigma._mainFrame.Draggable = true
+
+		local gui = sliderBack:FindFirstAncestorWhichIsA("ScreenGui")
+		if gui then
+			for _, f in ipairs(gui:GetDescendants()) do
+				if f:IsA("Frame") then
+					f.Active = true
+				end
+			end
 		end
 	end
 end)
