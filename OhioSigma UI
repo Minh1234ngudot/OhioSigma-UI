@@ -8,12 +8,10 @@ local tabCount = 0
 local tabBar: Frame = nil
 
 function OhioSigma:CreateWindow(config: { Name: string })
-        self._mainFrame = frame
-        local screenGui = Instance.new("ScreenGui")
+	local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = config.Name or "OhioSigma_Hub"
 	screenGui.ResetOnSpawn = false
 	screenGui.Parent = player:WaitForChild("PlayerGui")
-        
 
 	local frame = Instance.new("Frame")
 	frame.Size = UDim2.new(0, 450, 0, 300)
@@ -82,7 +80,7 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 
 	local label = Instance.new("TextLabel", tabButton)
 	label.Size = UDim2.new(1, 0, 1, 0)
-	label.Position = UDim2.new(0, 0, 0, 11)
+	label.Position = UDim2.new(0, 0, 0, 1)
 	label.BackgroundTransparency = 1
 	label.Text = name
 	label.Font = Enum.Font.GothamBlack
@@ -156,7 +154,7 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 
 	local label = Instance.new("TextLabel", btn)
 	label.Size = UDim2.new(1, 0, 1, 0)
-	label.Position = UDim2.new(0, 0, 0, 1)
+	label.Position = UDim2.new(0, 0, 0, 0)
 	label.BackgroundTransparency = 1
 	label.Text = labelText
 	label.Font = Enum.Font.GothamBlack
@@ -267,23 +265,16 @@ function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: n
 	local dragging = false
 
 	sliderBack.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = true
-		if OhioSigma._mainFrame then
-			OhioSigma._mainFrame.Draggable = false
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
 		end
-	end
-end)
+	end)
 
-sliderBack.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = false
-		if OhioSigma._mainFrame then
-			OhioSigma._mainFrame.Draggable = true
+	sliderBack.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
 		end
-	end
-end)
-
+	end)
 
 	game:GetService("UserInputService").InputChanged:Connect(function(input)
 		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
