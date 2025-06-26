@@ -156,7 +156,7 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 
 	local label = Instance.new("TextLabel", btn)
 	label.Size = UDim2.new(1, 0, 1, 0)
-	label.Position = UDim2.new(0, 0, 0, 0)
+	label.Position = UDim2.new(0, 0, 0, 1)
 	label.BackgroundTransparency = 1
 	label.Text = labelText
 	label.Font = Enum.Font.GothamBlack
