@@ -89,25 +89,14 @@ tabLayout.FillDirection = Enum.FillDirection.Horizontal
 tabLayout.Padding = UDim.new(0, 8)
 tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
--- Thanh phân cách
-local separator = Instance.new("Frame", frame)
-separator.Size = UDim2.new(1, 0, 0, 2)
-separator.Position = UDim2.new(0, 0, 0, 75)
-separator.BackgroundColor3 = Color3.new(1, 1, 1)
-separator.BorderSizePixel = 0
-separator.ZIndex = 2
-
 -- Logic cuộn khi ấn mũi tên
 local scrollAmount = 80
-
 leftArrow.MouseButton1Click:Connect(function()
 	tabBar.CanvasPosition = Vector2.new(math.max(0, tabBar.CanvasPosition.X - scrollAmount), 0)
 end)
-
 rightArrow.MouseButton1Click:Connect(function()
 	tabBar.CanvasPosition = Vector2.new(tabBar.CanvasPosition.X + scrollAmount, 0)
 end)
-
 
 function OhioSigma:CreateTab(name: string): ScrollingFrame
 	tabCount += 1
