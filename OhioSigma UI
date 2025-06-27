@@ -264,28 +264,36 @@ function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: n
 
 	local dragging = false
 
-	sliderBack.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-		end
-	end)
+local dragging = false
 
-	sliderBack.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = false
+sliderBack.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		if OhioSigma._mainFrame then
+			OhioSigma._mainFrame.Draggable = false
 		end
-	end)
+	end
+end)
 
-	game:GetService("UserInputService").InputChanged:Connect(function(input)
-		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-			local relX = math.clamp(input.Position.X - sliderBack.AbsolutePosition.X, 0, sliderBack.AbsoluteSize.X)
-			local ratio = relX / sliderBack.AbsoluteSize.X
-			local value = math.floor((minValue + (maxValue - minValue) * ratio) + 0.5)
-			sliderFill.Size = UDim2.new(ratio, 0, 1, 0)
-			label.Text = labelText .. ": " .. tostring(value)
-			onChange(value)
+sliderBack.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+		if OhioSigma._mainFrame then
+			OhioSigma._mainFrame.Draggable = true
 		end
-	end)
-end
+	end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local relX = math.clamp(input.Position.X - sliderBack.AbsolutePosition.X, 0, sliderBack.AbsoluteSize.X)
+		local ratio = relX / sliderBack.AbsoluteSize.X
+		local value = math.floor((minValue + (maxValue - minValue) * ratio) + 0.5)
+		sliderFill.Size = UDim2.new(ratio, 0, 1, 0)
+		label.Text = labelText .. ": " .. tostring(value)
+		onChange(value)
+	end
+end)
+
 
 return OhioSigma
