@@ -39,11 +39,56 @@ function OhioSigma:CreateWindow(config: { Name: string })
 	title.Position = UDim2.new(0, 0, 0, 0)
 	title.ZIndex = 2
 
-	tabBar = Instance.new("Frame", frame)
-	tabBar.Size = UDim2.new(1, 0, 0, 30)
-	tabBar.Position = UDim2.new(0, 0, 0, 40)
+	-- TabBar container
+	local tabBarContainer = Instance.new("Frame", frame)
+	tabBarContainer.Size = UDim2.new(1, 0, 0, 30)
+	tabBarContainer.Position = UDim2.new(0, 0, 0, 40)
+	tabBarContainer.BackgroundTransparency = 1
+	tabBarContainer.ZIndex = 2
+
+	-- Left arrow
+	local leftArrow = Instance.new("TextButton", tabBarContainer)
+	leftArrow.Size = UDim2.new(0, 25, 1, 0)
+	leftArrow.Position = UDim2.new(0, 0, 0, 0)
+	leftArrow.Text = "<"
+	leftArrow.Font = Enum.Font.GothamBold
+	leftArrow.TextSize = 20
+	leftArrow.TextColor3 = Color3.new(1, 1, 1)
+	leftArrow.BackgroundTransparency = 1
+
+	-- TabBar Scroll Area
+	tabBar = Instance.new("ScrollingFrame", tabBarContainer)
+	tabBar.Name = "TabScrollArea"
+	tabBar.Size = UDim2.new(1, -50, 1, 0)
+	tabBar.Position = UDim2.new(0, 25, 0, 0)
 	tabBar.BackgroundTransparency = 1
-	tabBar.ZIndex = 2
+	tabBar.BorderSizePixel = 0
+	tabBar.ScrollBarThickness = 0
+	tabBar.CanvasSize = UDim2.new(0, 0, 0, 0)
+	tabBar.ScrollingDirection = Enum.ScrollingDirection.X
+
+	local tabLayout = Instance.new("UIListLayout", tabBar)
+	tabLayout.FillDirection = Enum.FillDirection.Horizontal
+	tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	tabLayout.Padding = UDim.new(0, 5)
+
+	-- Right arrow
+	local rightArrow = Instance.new("TextButton", tabBarContainer)
+	rightArrow.Size = UDim2.new(0, 25, 1, 0)
+	rightArrow.Position = UDim2.new(1, -25, 0, 0)
+	rightArrow.Text = ">"
+	rightArrow.Font = Enum.Font.GothamBold
+	rightArrow.TextSize = 20
+	rightArrow.TextColor3 = Color3.new(1, 1, 1)
+	rightArrow.BackgroundTransparency = 1
+
+	-- Arrow scroll logic
+	leftArrow.MouseButton1Click:Connect(function()
+		tabBar.CanvasPosition = Vector2.new(math.max(0, tabBar.CanvasPosition.X - 80), 0)
+	end)
+	rightArrow.MouseButton1Click:Connect(function()
+		tabBar.CanvasPosition = Vector2.new(tabBar.CanvasPosition.X + 80, 0)
+	end)
 
 	local separator = Instance.new("Frame", frame)
 	separator.Size = UDim2.new(1, 0, 0, 2)
