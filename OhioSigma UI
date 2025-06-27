@@ -107,7 +107,6 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 
 	local tabButton = Instance.new("TextButton", tabBar)
 	tabButton.Size = UDim2.new(0, 80, 0, 28)
-	tabButton.Position = UDim2.new(0, 10 + (tabOrder - 1) * 90, 0, 1)
 	tabButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 	tabButton.BorderSizePixel = 0
 	tabButton.TextTransparency = 1
