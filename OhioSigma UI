@@ -22,6 +22,7 @@ function OhioSigma:CreateWindow(config: { Name: string })
 	frame.Draggable = true
 	frame.Parent = screenGui
 
+	-- Giao diện nền
 	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 	Instance.new("UIStroke", frame) do local s=frame.UIStroke s.Thickness=2 s.Color=Color3.fromRGB(0,170,255) s.Transparency=0.2 end
 	Instance.new("UIGradient", frame).Color = ColorSequence.new{
@@ -29,6 +30,7 @@ function OhioSigma:CreateWindow(config: { Name: string })
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 50))
 	}
 
+	-- Tiêu đề
 	local title = Instance.new("TextLabel", frame)
 	title.Size = UDim2.new(1, 0, 0, 40)
 	title.BackgroundTransparency = 1
@@ -38,6 +40,54 @@ function OhioSigma:CreateWindow(config: { Name: string })
 	title.TextSize = 28
 	title.Position = UDim2.new(0, 0, 0, 0)
 	title.ZIndex = 2
+
+	-- Mũi tên trái
+	local leftArrow = Instance.new("TextButton", frame)
+	leftArrow.Size = UDim2.new(0, 30, 0, 30)
+	leftArrow.Position = UDim2.new(0, 0, 0, 40)
+	leftArrow.Text = "<"
+	leftArrow.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	leftArrow.TextColor3 = Color3.new(1, 1, 1)
+	leftArrow.Font = Enum.Font.GothamBold
+	leftArrow.TextSize = 18
+	leftArrow.ZIndex = 3
+
+	-- Mũi tên phải
+	local rightArrow = Instance.new("TextButton", frame)
+	rightArrow.Size = UDim2.new(0, 30, 0, 30)
+	rightArrow.Position = UDim2.new(1, -30, 0, 40)
+	rightArrow.AnchorPoint = Vector2.new(1, 0)
+	rightArrow.Text = ">"
+	rightArrow.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	rightArrow.TextColor3 = Color3.new(1, 1, 1)
+	rightArrow.Font = Enum.Font.GothamBold
+	rightArrow.TextSize = 18
+	rightArrow.ZIndex = 3
+
+	-- TabBar cuộn
+	tabBar = Instance.new("ScrollingFrame", frame)
+	tabBar.Size = UDim2.new(1, -60, 0, 30)
+	tabBar.Position = UDim2.new(0, 30, 0, 40)
+	tabBar.BackgroundTransparency = 1
+	tabBar.ScrollBarThickness = 0
+	tabBar.ScrollingDirection = Enum.ScrollingDirection.X
+	tabBar.AutomaticCanvasSize = Enum.AutomaticSize.X
+	tabBar.CanvasSize = UDim2.new(0, 0, 0, 0)
+	tabBar.ZIndex = 2
+
+	local tabLayout = Instance.new("UIListLayout", tabBar)
+	tabLayout.FillDirection = Enum.FillDirection.Horizontal
+	tabLayout.Padding = UDim.new(0, 8)
+	tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+	-- Cuộn trái/phải
+	local scrollAmount = 80
+	leftArrow.MouseButton1Click:Connect(function()
+		tabBar.CanvasPosition = Vector2.new(math.max(0, tabBar.CanvasPosition.X - scrollAmount), 0)
+	end)
+	rightArrow.MouseButton1Click:Connect(function()
+		tabBar.CanvasPosition = Vector2.new(tabBar.CanvasPosition.X + scrollAmount, 0)
+	end)
 
 	local separator = Instance.new("Frame", frame)
 	separator.Size = UDim2.new(1, 0, 0, 2)
@@ -49,106 +99,6 @@ function OhioSigma:CreateWindow(config: { Name: string })
 	self._mainFrame = frame
 	return self
 end
-
---!strict
-local OhioSigma = {}
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
-local tabContents = {}
-local tabCount = 0
-local tabBar: Frame = nil
-
-function OhioSigma:CreateWindow(config: { Name: string })
-	local screenGui = Instance.new("ScreenGui")
-	screenGui.Name = config.Name or "OhioSigma_Hub"
-	screenGui.ResetOnSpawn = false
-	screenGui.Parent = player:WaitForChild("PlayerGui")
-
-	local frame = Instance.new("Frame")
-	frame.Size = UDim2.new(0, 450, 0, 300)
-	frame.Position = UDim2.new(0.5, -225, 0.5, -150)
-	frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	frame.BorderSizePixel = 0
-	frame.Active = true
-	frame.Draggable = true
-	frame.Parent = screenGui
-
-	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
-	Instance.new("UIStroke", frame) do local s=frame.UIStroke s.Thickness=2 s.Color=Color3.fromRGB(0,170,255) s.Transparency=0.2 end
-	Instance.new("UIGradient", frame).Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 35, 35)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 50))
-	}
-
-	local title = Instance.new("TextLabel", frame)
-	title.Size = UDim2.new(1, 0, 0, 40)
-	title.BackgroundTransparency = 1
-	title.Text = config.Name or "OhioSigma Hub"
-	title.TextColor3 = Color3.fromRGB(0, 170, 255)
-	title.Font = Enum.Font.GothamSemibold
-	title.TextSize = 28
-	title.Position = UDim2.new(0, 0, 0, 0)
-	title.ZIndex = 2
-
-	local separator = Instance.new("Frame", frame)
-	separator.Size = UDim2.new(1, 0, 0, 2)
-	separator.Position = UDim2.new(0, 0, 0, 75)
-	separator.BackgroundColor3 = Color3.new(1, 1, 1)
-	separator.BorderSizePixel = 0
-	separator.ZIndex = 2
-
-	self._mainFrame = frame
-	return self
-end
-
--- Mũi tên trái
-local leftArrow = Instance.new("TextButton", frame)
-leftArrow.Size = UDim2.new(0, 30, 0, 30)
-leftArrow.Position = UDim2.new(0, 0, 0, 40)
-leftArrow.Text = "<"
-leftArrow.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-leftArrow.TextColor3 = Color3.new(1, 1, 1)
-leftArrow.Font = Enum.Font.GothamBold
-leftArrow.TextSize = 18
-leftArrow.ZIndex = 3
-
--- Mũi tên phải
-local rightArrow = Instance.new("TextButton", frame)
-rightArrow.Size = UDim2.new(0, 30, 0, 30)
-rightArrow.Position = UDim2.new(1, -30, 0, 40)
-rightArrow.AnchorPoint = Vector2.new(1, 0)
-rightArrow.Text = ">"
-rightArrow.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-rightArrow.TextColor3 = Color3.new(1, 1, 1)
-rightArrow.Font = Enum.Font.GothamBold
-rightArrow.TextSize = 18
-rightArrow.ZIndex = 3
-
--- Tab bar cuộn ngang
-tabBar = Instance.new("ScrollingFrame", frame)
-tabBar.Size = UDim2.new(1, -60, 0, 30)
-tabBar.Position = UDim2.new(0, 30, 0, 40)
-tabBar.BackgroundTransparency = 1
-tabBar.ScrollBarThickness = 0
-tabBar.ScrollingDirection = Enum.ScrollingDirection.X
-tabBar.AutomaticCanvasSize = Enum.AutomaticSize.X
-tabBar.CanvasSize = UDim2.new(0, 0, 0, 0)
-tabBar.ZIndex = 2
-
-local tabLayout = Instance.new("UIListLayout", tabBar)
-tabLayout.FillDirection = Enum.FillDirection.Horizontal
-tabLayout.Padding = UDim.new(0, 8)
-tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
--- Logic cuộn khi ấn mũi tên
-local scrollAmount = 80
-leftArrow.MouseButton1Click:Connect(function()
-	tabBar.CanvasPosition = Vector2.new(math.max(0, tabBar.CanvasPosition.X - scrollAmount), 0)
-end)
-rightArrow.MouseButton1Click:Connect(function()
-	tabBar.CanvasPosition = Vector2.new(tabBar.CanvasPosition.X + scrollAmount, 0)
-end)
 
 function OhioSigma:CreateTab(name: string): ScrollingFrame
 	tabCount += 1
