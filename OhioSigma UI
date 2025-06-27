@@ -1,6 +1,7 @@
 --!strict
 local OhioSigma = {}
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 
 local tabContents = {}
@@ -108,8 +109,9 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 	tabButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 	tabButton.BorderSizePixel = 0
 	tabButton.TextTransparency = 1
+	tabButton.AutoButtonColor = true
+	tabButton.Active = true
 	tabButton.ZIndex = 3
-
 	Instance.new("UICorner", tabButton).CornerRadius = UDim.new(0, 10)
 
 	local gradient = Instance.new("UIGradient", tabButton)
@@ -121,7 +123,6 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 
 	local label = Instance.new("TextLabel", tabButton)
 	label.Size = UDim2.new(1, 0, 1, 0)
-	label.Position = UDim2.new(0, 0, 0, 1)
 	label.BackgroundTransparency = 1
 	label.Text = name
 	label.Font = Enum.Font.GothamBlack
@@ -136,7 +137,6 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
 	}
-
 	task.spawn(function()
 		while true do
 			for i = 0, 360, 2 do
@@ -159,17 +159,12 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 
 	local padding = Instance.new("UIPadding", content)
 	padding.PaddingLeft = UDim.new(0, 7)
-
 	local layout = Instance.new("UIGridLayout", content)
 	layout.CellSize = UDim2.new(0, 200, 0, 50)
-	layout.CellPadding = UDim2.new(0, 29, 0, 10)
+	layout.CellPadding = UDim.new(0, 29)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 
-	tabContents[name] = {
-		content = content,
-		button = tabButton
-	}
-
+	tabContents[name] = { content = content, button = tabButton }
 	tabButton.MouseButton1Click:Connect(function()
 		for _, data in pairs(tabContents) do
 			data.content.Visible = false
@@ -178,7 +173,6 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 		content.Visible = true
 		tabButton.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
 	end)
-
 	return content
 end
 
@@ -191,6 +185,13 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 	btn.AutoButtonColor = false
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
 
+	local bgGradient = Instance.new("UIGradient", btn)
+	bgGradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+	}
+	bgGradient.Rotation = 90
+
 	local label = Instance.new("TextLabel", btn)
 	label.Size = UDim2.new(1, 0, 1, 0)
 	label.BackgroundTransparency = 1
@@ -199,13 +200,13 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 	label.TextSize = 16
 	label.TextColor3 = Color3.new(1, 1, 1)
 	label.TextXAlignment = Enum.TextXAlignment.Center
+	Instance.new("UICorner", label).CornerRadius = UDim.new(0, 10)
 
 	local labelGradient = Instance.new("UIGradient", label)
 	labelGradient.Color = ColorSequence.new{
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
 	}
-
 	task.spawn(function()
 		while true do
 			for i = 0, 360, 2 do
@@ -214,7 +215,6 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 			end
 		end
 	end)
-
 	btn.MouseButton1Click:Connect(onClick)
 end
 
@@ -225,6 +225,15 @@ function OhioSigma:CreateToggleButton(parent: Instance, labelText: string, onTog
 	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 	btn.BorderSizePixel = 0
 	btn.TextTransparency = 1
+	btn.AutoButtonColor = false
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
+
+	local bgGradient = Instance.new("UIGradient", btn)
+	bgGradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+	}
+	bgGradient.Rotation = 90
 
 	local label = Instance.new("TextLabel", btn)
 	label.Size = UDim2.new(1, 0, 1, 0)
@@ -234,13 +243,13 @@ function OhioSigma:CreateToggleButton(parent: Instance, labelText: string, onTog
 	label.TextSize = 16
 	label.TextColor3 = Color3.new(1, 1, 1)
 	label.TextXAlignment = Enum.TextXAlignment.Center
+	Instance.new("UICorner", label).CornerRadius = UDim.new(0, 10)
 
 	local labelGradient = Instance.new("UIGradient", label)
 	labelGradient.Color = ColorSequence.new{
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
 	}
-
 	task.spawn(function()
 		while true do
 			for i = 0, 360, 2 do
@@ -249,7 +258,6 @@ function OhioSigma:CreateToggleButton(parent: Instance, labelText: string, onTog
 			end
 		end
 	end)
-
 	btn.MouseButton1Click:Connect(function()
 		state = not state
 		label.Text = (state and "[ ON ]  " or "[ OFF ]  ") .. labelText
@@ -286,7 +294,6 @@ function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: n
 	Instance.new("UICorner", sliderFill).CornerRadius = UDim.new(0, 6)
 
 	local dragging = false
-
 	sliderBack.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			dragging = true
@@ -295,7 +302,6 @@ function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: n
 			end
 		end
 	end)
-
 	sliderBack.InputEnded:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			dragging = false
@@ -304,8 +310,7 @@ function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: n
 			end
 		end
 	end)
-
-	game:GetService("UserInputService").InputChanged:Connect(function(input)
+	UserInputService.InputChanged:Connect(function(input)
 		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
 			local relX = math.clamp(input.Position.X - sliderBack.AbsolutePosition.X, 0, sliderBack.AbsoluteSize.X)
 			local ratio = relX / sliderBack.AbsoluteSize.X
