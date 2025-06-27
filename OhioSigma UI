@@ -165,7 +165,7 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 
 	local layout = Instance.new("UIGridLayout", content)
 	layout.CellSize = UDim2.new(0, 200, 0, 50)
-	layout.CellPadding = UDim2.new(0, 29, 0, 10)
+	layout.CellPadding = UDim.new(0, 29, 0, 10)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 
 	tabContents[name] = {
@@ -192,7 +192,7 @@ end
 function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: () -> ())
 	local btn = Instance.new("TextButton", parent)
 	btn.Size = UDim2.new(0, 200, 0, 50)
-	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255) -- Giống màu tab
+	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 	btn.BorderSizePixel = 0
 	btn.TextTransparency = 1
 	btn.AutoButtonColor = false
@@ -220,7 +220,6 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
 	}
 
-	-- Hiệu ứng quay gradient
 	task.spawn(function()
 		while label and labelGradient and labelGradient.Parent do
 			for i = 0, 360, 2 do
@@ -230,22 +229,16 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 		end
 	end)
 
-	-- Click phản hồi màu giống Tab selected
 	btn.MouseButton1Click:Connect(function()
-		btn.BackgroundColor3 = Color3.fromRGB(0, 255, 127) -- Giống Tab selected
-		task.spawn(function()
-			onClick()
-		end)
+		btn.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
+		task.spawn(onClick)
 		task.wait(0.15)
 		btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 	end)
 end
 
-return OhioSigma
-
 function OhioSigma:CreateToggleButton(parent: Instance, labelText: string, onToggle: (boolean) -> ())
 	local state = false
-
 	local btn = Instance.new("TextButton", parent)
 	btn.Size = UDim2.new(0, 200, 0, 50)
 	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
@@ -253,13 +246,6 @@ function OhioSigma:CreateToggleButton(parent: Instance, labelText: string, onTog
 	btn.TextTransparency = 1
 	btn.AutoButtonColor = false
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
-
-	local bgGradient = Instance.new("UIGradient", btn)
-	bgGradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
-	}
-	bgGradient.Rotation = 90
 
 	local label = Instance.new("TextLabel", btn)
 	label.Size = UDim2.new(1, 0, 1, 0)
@@ -276,7 +262,6 @@ function OhioSigma:CreateToggleButton(parent: Instance, labelText: string, onTog
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
 	}
 
-	-- Gradient xoay
 	task.spawn(function()
 		while label and labelGradient and labelGradient.Parent do
 			for i = 0, 360, 2 do
@@ -286,7 +271,6 @@ function OhioSigma:CreateToggleButton(parent: Instance, labelText: string, onTog
 		end
 	end)
 
-	-- Toggle
 	btn.MouseButton1Click:Connect(function()
 		state = not state
 		label.Text = (state and "[ ON ]  " or "[ OFF ]  ") .. labelText
