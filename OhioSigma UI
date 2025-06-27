@@ -182,7 +182,7 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 		tabButton.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
 	end)
 
-	return content -- ✅ FIXED: trả về content để người dùng dùng làm parent
+	return content -- PHẢI return content mới dùng làm parent tạo nút
 end
 
 function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: () -> ())
