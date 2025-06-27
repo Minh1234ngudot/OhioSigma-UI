@@ -360,3 +360,5 @@ function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: n
 		end
 	end)
 end
+
+return OhioSigma
