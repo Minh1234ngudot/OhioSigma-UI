@@ -193,10 +193,13 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 	local btn = Instance.new("TextButton", parent)
 	btn.Size = UDim2.new(0, 200, 0, 50)
 	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-	btn.BorderSizePixel = 0
-	btn.TextTransparency = 1
-	btn.AutoButtonColor = false
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
+
+local bgGradient = Instance.new("UIGradient", btn)
+bgGradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+}
+bgGradient.Rotation = 90
 
 	local label = Instance.new("TextLabel", btn)
 	label.Size = UDim2.new(1, 0, 1, 0)
