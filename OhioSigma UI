@@ -211,11 +211,6 @@ bgGradient.Rotation = 90
 	label.TextXAlignment = Enum.TextXAlignment.Center
         label.TextYAlignment = Enum.TextYAlignment.Center -- thêm dòng này
 
-        -- Nếu thấy gradient xoay gây rối:
-        labelGradient.Rotation = 45 -- xoay nhẹ
-        -- hoặc bỏ xoay liên tục
-
-
 	local labelGradient = Instance.new("UIGradient", label)
 	labelGradient.Color = ColorSequence.new{
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
