@@ -190,27 +190,18 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 end
 
 function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: () -> ())
-        local btn = Instance.new("TextButton", parent) 
-	btn.Size = UDim2.new(0, 80, 0, 28)
+	local btn = Instance.new("TextButton", parent)
+	btn.Size = UDim2.new(0, 200, 0, 50)
 	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 	btn.BorderSizePixel = 0
 	btn.TextTransparency = 1
 	btn.AutoButtonColor = false
-	btn.Active = true
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
-
-	local gradient = Instance.new("UIGradient", btn)
-	gradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
-	}
-	gradient.Rotation = 90
 
 	local label = Instance.new("TextLabel", btn)
 	label.Size = UDim2.new(1, 0, 1, 0)
-	label.Position = UDim2.new(0, 0, 0, 1)
 	label.BackgroundTransparency = 1
-	label.Text = name
+	label.Text = labelText
 	label.Font = Enum.Font.GothamBlack
 	label.TextSize = 16
 	label.TextColor3 = Color3.new(1, 1, 1)
@@ -221,7 +212,6 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
 	}
-
 
 	task.spawn(function()
 		while label and labelGradient and labelGradient.Parent do
