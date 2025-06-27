@@ -149,7 +149,7 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 		end
 	end)
 
-	local content = Instance.new("ScrollingFrame", tabBar.Parent)
+	local content = Instance.new("ScrollingFrame", self._mainFrame)
 	content.Size = UDim2.new(1, -8, 1, -90)
 	content.Position = UDim2.new(0, 4, 0, 81)
 	content.BackgroundTransparency = 1
