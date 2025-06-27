@@ -39,14 +39,12 @@ function OhioSigma:CreateWindow(config: { Name: string })
 	title.Position = UDim2.new(0, 0, 0, 0)
 	title.ZIndex = 2
 
-	-- TabBar container
 	local tabBarContainer = Instance.new("Frame", frame)
 	tabBarContainer.Size = UDim2.new(1, 0, 0, 30)
 	tabBarContainer.Position = UDim2.new(0, 0, 0, 40)
 	tabBarContainer.BackgroundTransparency = 1
 	tabBarContainer.ZIndex = 2
 
-	-- Left arrow
 	local leftArrow = Instance.new("TextButton", tabBarContainer)
 	leftArrow.Size = UDim2.new(0, 25, 1, 0)
 	leftArrow.Position = UDim2.new(0, 0, 0, 0)
@@ -56,7 +54,6 @@ function OhioSigma:CreateWindow(config: { Name: string })
 	leftArrow.TextColor3 = Color3.new(1, 1, 1)
 	leftArrow.BackgroundTransparency = 1
 
-	-- TabBar Scroll Area
 	tabBar = Instance.new("ScrollingFrame", tabBarContainer)
 	tabBar.Name = "TabScrollArea"
 	tabBar.Size = UDim2.new(1, -50, 1, 0)
@@ -71,8 +68,10 @@ function OhioSigma:CreateWindow(config: { Name: string })
 	tabLayout.FillDirection = Enum.FillDirection.Horizontal
 	tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	tabLayout.Padding = UDim.new(0, 5)
+	tabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		tabBar.CanvasSize = UDim2.new(0, tabLayout.AbsoluteContentSize.X, 0, 0)
+	end)
 
-	-- Right arrow
 	local rightArrow = Instance.new("TextButton", tabBarContainer)
 	rightArrow.Size = UDim2.new(0, 25, 1, 0)
 	rightArrow.Position = UDim2.new(1, -25, 0, 0)
@@ -82,7 +81,6 @@ function OhioSigma:CreateWindow(config: { Name: string })
 	rightArrow.TextColor3 = Color3.new(1, 1, 1)
 	rightArrow.BackgroundTransparency = 1
 
-	-- Arrow scroll logic
 	leftArrow.MouseButton1Click:Connect(function()
 		tabBar.CanvasPosition = Vector2.new(math.max(0, tabBar.CanvasPosition.X - 80), 0)
 	end)
@@ -110,8 +108,6 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 	tabButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 	tabButton.BorderSizePixel = 0
 	tabButton.TextTransparency = 1
-	tabButton.AutoButtonColor = true
-	tabButton.Active = true
 	tabButton.ZIndex = 3
 
 	Instance.new("UICorner", tabButton).CornerRadius = UDim.new(0, 10)
@@ -169,13 +165,18 @@ function OhioSigma:CreateTab(name: string): ScrollingFrame
 	layout.CellPadding = UDim2.new(0, 29, 0, 10)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 
-	tabContents[name] = content
+	tabContents[name] = {
+		content = content,
+		button = tabButton
+	}
 
 	tabButton.MouseButton1Click:Connect(function()
-		for _, c in pairs(tabContents) do
-			c.Visible = false
+		for _, data in pairs(tabContents) do
+			data.content.Visible = false
+			data.button.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 		end
 		content.Visible = true
+		tabButton.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
 	end)
 
 	return content
@@ -190,30 +191,20 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 	btn.AutoButtonColor = false
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
 
-	local bgGradient = Instance.new("UIGradient", btn)
-	bgGradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
-	}
-	bgGradient.Rotation = 90
-
 	local label = Instance.new("TextLabel", btn)
 	label.Size = UDim2.new(1, 0, 1, 0)
-	label.Position = UDim2.new(0, 0, 0, 0)
 	label.BackgroundTransparency = 1
 	label.Text = labelText
 	label.Font = Enum.Font.GothamBlack
 	label.TextSize = 16
 	label.TextColor3 = Color3.new(1, 1, 1)
 	label.TextXAlignment = Enum.TextXAlignment.Center
-	Instance.new("UICorner", label).CornerRadius = UDim.new(0, 10)
 
 	local labelGradient = Instance.new("UIGradient", label)
 	labelGradient.Color = ColorSequence.new{
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
 	}
-	labelGradient.Rotation = 0
 
 	task.spawn(function()
 		while true do
@@ -229,39 +220,26 @@ end
 
 function OhioSigma:CreateToggleButton(parent: Instance, labelText: string, onToggle: (boolean) -> ())
 	local state = false
-
 	local btn = Instance.new("TextButton", parent)
 	btn.Size = UDim2.new(0, 200, 0, 50)
 	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 	btn.BorderSizePixel = 0
 	btn.TextTransparency = 1
-	btn.AutoButtonColor = false
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
-
-	local bgGradient = Instance.new("UIGradient", btn)
-	bgGradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
-	}
-	bgGradient.Rotation = 90
 
 	local label = Instance.new("TextLabel", btn)
 	label.Size = UDim2.new(1, 0, 1, 0)
-	label.Position = UDim2.new(0, 0, 0, 0)
 	label.BackgroundTransparency = 1
 	label.Text = "[ OFF ]  " .. labelText
 	label.Font = Enum.Font.GothamBlack
 	label.TextSize = 16
 	label.TextColor3 = Color3.new(1, 1, 1)
 	label.TextXAlignment = Enum.TextXAlignment.Center
-	Instance.new("UICorner", label).CornerRadius = UDim.new(0, 10)
 
 	local labelGradient = Instance.new("UIGradient", label)
 	labelGradient.Color = ColorSequence.new{
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
 	}
-	labelGradient.Rotation = 0
 
 	task.spawn(function()
 		while true do
