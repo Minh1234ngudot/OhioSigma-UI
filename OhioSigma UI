@@ -192,11 +192,18 @@ end
 function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: () -> ())
 	local btn = Instance.new("TextButton", parent)
 	btn.Size = UDim2.new(0, 200, 0, 50)
-	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255) -- Giống màu tab
 	btn.BorderSizePixel = 0
 	btn.TextTransparency = 1
 	btn.AutoButtonColor = false
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
+
+	local bgGradient = Instance.new("UIGradient", btn)
+	bgGradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+	}
+	bgGradient.Rotation = 90
 
 	local label = Instance.new("TextLabel", btn)
 	label.Size = UDim2.new(1, 0, 1, 0)
@@ -213,6 +220,7 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
 	}
 
+	-- Hiệu ứng quay gradient
 	task.spawn(function()
 		while label and labelGradient and labelGradient.Parent do
 			for i = 0, 360, 2 do
@@ -222,7 +230,133 @@ function OhioSigma:CreateButton(parent: Instance, labelText: string, onClick: ()
 		end
 	end)
 
-	btn.MouseButton1Click:Connect(onClick)
+	-- Click phản hồi màu giống Tab selected
+	btn.MouseButton1Click:Connect(function()
+		btn.BackgroundColor3 = Color3.fromRGB(0, 255, 127) -- Giống Tab selected
+		task.spawn(function()
+			onClick()
+		end)
+		task.wait(0.15)
+		btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+	end)
 end
 
 return OhioSigma
+
+function OhioSigma:CreateToggleButton(parent: Instance, labelText: string, onToggle: (boolean) -> ())
+	local state = false
+
+	local btn = Instance.new("TextButton", parent)
+	btn.Size = UDim2.new(0, 200, 0, 50)
+	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+	btn.BorderSizePixel = 0
+	btn.TextTransparency = 1
+	btn.AutoButtonColor = false
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
+
+	local bgGradient = Instance.new("UIGradient", btn)
+	bgGradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+	}
+	bgGradient.Rotation = 90
+
+	local label = Instance.new("TextLabel", btn)
+	label.Size = UDim2.new(1, 0, 1, 0)
+	label.BackgroundTransparency = 1
+	label.Text = "[ OFF ]  " .. labelText
+	label.Font = Enum.Font.GothamBlack
+	label.TextSize = 16
+	label.TextColor3 = Color3.new(1, 1, 1)
+	label.TextXAlignment = Enum.TextXAlignment.Center
+
+	local labelGradient = Instance.new("UIGradient", label)
+	labelGradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
+	}
+
+	-- Gradient xoay
+	task.spawn(function()
+		while label and labelGradient and labelGradient.Parent do
+			for i = 0, 360, 2 do
+				labelGradient.Rotation = i
+				task.wait(0.02)
+			end
+		end
+	end)
+
+	-- Toggle
+	btn.MouseButton1Click:Connect(function()
+		state = not state
+		label.Text = (state and "[ ON ]  " or "[ OFF ]  ") .. labelText
+		btn.BackgroundColor3 = state and Color3.fromRGB(0, 255, 127) or Color3.fromRGB(0, 170, 255)
+		onToggle(state)
+	end)
+end
+
+function OhioSigma:CreateSlider(parent: Instance, labelText: string, minValue: number, maxValue: number, defaultValue: number, onChange: (number) -> ())
+	local holder = Instance.new("Frame", parent)
+	holder.Size = UDim2.new(0, 200, 0, 50)
+	holder.BackgroundTransparency = 1
+
+	local label = Instance.new("TextLabel", holder)
+	label.Size = UDim2.new(1, 0, 0, 20)
+	label.BackgroundTransparency = 1
+	label.Text = labelText .. ": " .. tostring(defaultValue)
+	label.Font = Enum.Font.GothamBlack
+	label.TextSize = 14
+	label.TextColor3 = Color3.new(1, 1, 1)
+	label.TextXAlignment = Enum.TextXAlignment.Left
+
+	local sliderBack = Instance.new("Frame", holder)
+	sliderBack.Size = UDim2.new(1, 0, 0, 10)
+	sliderBack.Position = UDim2.new(0, 0, 0, 30)
+	sliderBack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	sliderBack.BorderSizePixel = 0
+	Instance.new("UICorner", sliderBack).CornerRadius = UDim.new(0, 6)
+
+	local sliderFill = Instance.new("Frame", sliderBack)
+	sliderFill.Size = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 1, 0)
+	sliderFill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+	sliderFill.BorderSizePixel = 0
+	Instance.new("UICorner", sliderFill).CornerRadius = UDim.new(0, 6)
+
+	local fillGradient = Instance.new("UIGradient", sliderFill)
+	fillGradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+	}
+	fillGradient.Rotation = 90
+
+	local dragging = false
+
+	sliderBack.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			if OhioSigma._mainFrame then
+				OhioSigma._mainFrame.Draggable = false
+			end
+		end
+	end)
+
+	sliderBack.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
+			if OhioSigma._mainFrame then
+				OhioSigma._mainFrame.Draggable = true
+			end
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local relX = math.clamp(input.Position.X - sliderBack.AbsolutePosition.X, 0, sliderBack.AbsoluteSize.X)
+			local ratio = relX / sliderBack.AbsoluteSize.X
+			local value = math.floor((minValue + (maxValue - minValue) * ratio) + 0.5)
+			sliderFill.Size = UDim2.new(ratio, 0, 1, 0)
+			label.Text = labelText .. ": " .. tostring(value)
+			onChange(value)
+		end
+	end)
+end
