@@ -100,48 +100,87 @@ if config.KeySystem then
 		end)
 
 		-- Get Key Button
-		local getKey = Instance.new("TextButton", frame)
-		getKey.Size = UDim2.new(0.35, 0, 0, 30)
-		getKey.Position = UDim2.new(0.6, 0, 0, 110)
-		getKey.Text = "Get Key 🔗"
-		getKey.Font = Enum.Font.GothamBold
-		getKey.TextSize = 14
-		getKey.TextColor3 = Color3.new(1, 1, 1)
-		getKey.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-		Instance.new("UICorner", getKey).CornerRadius = UDim.new(0, 6)
+local submit = Instance.new("TextButton", frame)
+submit.Size = UDim2.new(0.55, 0, 0, 30)
+submit.Position = UDim2.new(0.05, 0, 0, 110)
+submit.Text = "Submit Key"
+submit.Font = Enum.Font.GothamBlack
+submit.TextSize = 16
+submit.TextColor3 = Color3.new(1, 1, 1)
+submit.TextTransparency = 0
+submit.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+submit.BorderSizePixel = 0
+Instance.new("UICorner", submit).CornerRadius = UDim.new(0, 10)
 
-		local linkGradient = Instance.new("UIGradient", getKey)
-		linkGradient.Color = ColorSequence.new{
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
-		}
-		linkGradient.Rotation = 90
+local submitGrad = Instance.new("UIGradient", submit)
+submitGrad.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+}
+submitGrad.Rotation = 90
 
-		task.spawn(function()
-			while getKey and linkGradient and linkGradient.Parent do
-				for i = 0, 360, 2 do
-					linkGradient.Rotation = i
-					task.wait(0.02)
-				end
-			end
-		end)
-
-		getKey.MouseButton1Click:Connect(function()
-			if config.KeySettings.linkkey then
-				if setclipboard then
-					setclipboard(config.KeySettings.linkkey)
-				end
-				game:GetService("StarterGui"):SetCore("SendNotification", {
-					Title = "Key Link Copied!",
-					Text = "Paste into your browser.",
-					Duration = 4
-				})
-			end
-		end)
-
-		repeat task.wait() until not keyGui or not keyGui.Parent
+task.spawn(function()
+	while submit and submitGrad and submitGrad.Parent do
+		for i = 0, 360, 2 do
+			submitGrad.Rotation = i
+			task.wait(0.02)
+		end
 	end
-end
+end)
+
+submit.MouseButton1Click:Connect(function()
+	local userInput = textbox.Text
+	if table.find(config.KeySettings.Key, userInput) then
+		if config.KeySettings.SaveKey and writefile then
+			pcall(function()
+				writefile("carfrost_key.txt", userInput)
+			end)
+		end
+		keyGui:Destroy()
+	else
+		status.Text = "Invalid Key!"
+	end
+end)
+
+-- Get Key Button
+local getKey = Instance.new("TextButton", frame)
+getKey.Size = UDim2.new(0.35, 0, 0, 30)
+getKey.Position = UDim2.new(0.6, 0, 0, 110)
+getKey.Text = "Get Key 🔗"
+getKey.Font = Enum.Font.GothamBlack
+getKey.TextSize = 14
+getKey.TextColor3 = Color3.new(1, 1, 1)
+getKey.TextTransparency = 0
+getKey.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+getKey.BorderSizePixel = 0
+Instance.new("UICorner", getKey).CornerRadius = UDim.new(0, 10)
+
+local getKeyGrad = Instance.new("UIGradient", getKey)
+getKeyGrad.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+}
+getKeyGrad.Rotation = 90
+
+task.spawn(function()
+	while getKey and getKeyGrad and getKeyGrad.Parent do
+		for i = 0, 360, 2 do
+			getKeyGrad.Rotation = i
+			task.wait(0.02)
+		end
+	end
+end)
+
+getKey.MouseButton1Click:Connect(function()
+	if config.KeySettings.linkkey then
+		if setclipboard then setclipboard(config.KeySettings.linkkey) end
+		game:GetService("StarterGui"):SetCore("SendNotification", {
+			Title = "Key Link Copied!",
+			Text = "Paste into your browser.",
+			Duration = 4
+		})
+	end
+end)
 
 	-- Giao diện GUI chính
 	local screenGui = Instance.new("ScreenGui")
