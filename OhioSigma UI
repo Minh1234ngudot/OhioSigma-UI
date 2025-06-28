@@ -8,7 +8,85 @@ local tabContents = {}
 local tabCount = 0
 local tabBar: Frame = nil
 
-function Carfrost:CreateWindow(config: { Name: string })
+function Carfrost:CreateWindow(config: { Name: string, KeySystem: boolean?, KeySettings: { Title: string, SaveKey: boolean, Key: { string }, linkkey: string }? })
+	-- KeySystem xử lý trước GUI
+	if config.KeySystem then
+		local savedKey = nil
+		if config.KeySettings.SaveKey and readfile then
+			pcall(function()
+				savedKey = readfile("carfrost_key.txt")
+			end)
+		end
+
+		if not (savedKey and table.find(config.KeySettings.Key, savedKey)) then
+			local keyGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+			keyGui.Name = "KeySystem"
+
+			local frame = Instance.new("Frame", keyGui)
+			frame.Size = UDim2.new(0, 300, 0, 150)
+			frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+			frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+			Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+
+			local title = Instance.new("TextLabel", frame)
+			title.Size = UDim2.new(1, 0, 0, 30)
+			title.Position = UDim2.new(0, 0, 0, 0)
+			title.Text = config.KeySettings.Title or "Key Required"
+			title.Font = Enum.Font.GothamBold
+			title.TextSize = 20
+			title.TextColor3 = Color3.new(1, 1, 1)
+			title.BackgroundTransparency = 1
+
+			local textbox = Instance.new("TextBox", frame)
+			textbox.PlaceholderText = "Enter Key Here..."
+			textbox.Size = UDim2.new(0.9, 0, 0, 30)
+			textbox.Position = UDim2.new(0.05, 0, 0, 50)
+			textbox.Text = ""
+			textbox.TextColor3 = Color3.new(1, 1, 1)
+			textbox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+			textbox.ClearTextOnFocus = false
+			textbox.Font = Enum.Font.Gotham
+			textbox.TextSize = 16
+			Instance.new("UICorner", textbox).CornerRadius = UDim.new(0, 6)
+
+			local status = Instance.new("TextLabel", frame)
+			status.Size = UDim2.new(1, 0, 0, 20)
+			status.Position = UDim2.new(0, 0, 0, 90)
+			status.BackgroundTransparency = 1
+			status.TextColor3 = Color3.fromRGB(255, 0, 0)
+			status.Font = Enum.Font.Gotham
+			status.TextSize = 14
+			status.Text = ""
+
+			local submit = Instance.new("TextButton", frame)
+			submit.Size = UDim2.new(0.9, 0, 0, 30)
+			submit.Position = UDim2.new(0.05, 0, 0, 115)
+			submit.Text = "Submit Key"
+			submit.Font = Enum.Font.GothamBold
+			submit.TextSize = 16
+			submit.TextColor3 = Color3.new(1, 1, 1)
+			submit.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+			Instance.new("UICorner", submit).CornerRadius = UDim.new(0, 6)
+
+			submit.MouseButton1Click:Connect(function()
+				local userInput = textbox.Text
+				if table.find(config.KeySettings.Key, userInput) then
+					if config.KeySettings.SaveKey and writefile then
+						pcall(function()
+							writefile("carfrost_key.txt", userInput)
+						end)
+					end
+					keyGui:Destroy()
+				else
+					status.Text = "Invalid Key!"
+				end
+			end)
+
+			repeat task.wait() until not keyGui or not keyGui.Parent
+		end
+	end
+
+	-- Giao diện GUI chính
 	local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = config.Name or "Carfrost_Hub"
 	screenGui.ResetOnSpawn = false
@@ -24,7 +102,9 @@ function Carfrost:CreateWindow(config: { Name: string })
 	frame.Parent = screenGui
 
 	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
-	Instance.new("UIStroke", frame) do local s=frame.UIStroke s.Thickness=2 s.Color=Color3.fromRGB(0,170,255) s.Transparency=0.2 end
+	Instance.new("UIStroke", frame).Thickness = 2
+	frame.UIStroke.Color = Color3.fromRGB(0,170,255)
+	frame.UIStroke.Transparency = 0.2
 	Instance.new("UIGradient", frame).Color = ColorSequence.new{
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 35, 35)),
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 50))
@@ -374,6 +454,10 @@ function Carfrost:CreateSlider(parent: Instance, labelText: string, minValue: nu
 			onChange(value)
 		end
 	end)
+end
+
+	self._mainFrame = frame
+	return self
 end
 
 return Carfrost
