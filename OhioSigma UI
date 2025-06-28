@@ -270,6 +270,7 @@ function Carfrost:CreateTab(name: string): ScrollingFrame
 end
 
 function Carfrost:CreateButton(parent: Instance, labelText: string, onClick: () -> ())
+        assert(parent, "Parent is nil in CreateButton")
 	local btn = Instance.new("TextButton", parent)
 	btn.Size = UDim2.new(0, 200, 0, 50)
 	btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
@@ -454,10 +455,6 @@ function Carfrost:CreateSlider(parent: Instance, labelText: string, minValue: nu
 			onChange(value)
 		end
 	end)
-end
-
-	self._mainFrame = frame
-	return self
 end
 
 return Carfrost
