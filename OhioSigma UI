@@ -10,81 +10,138 @@ local tabBar: Frame = nil
 
 function Carfrost:CreateWindow(config: { Name: string, KeySystem: boolean?, KeySettings: { Title: string, SaveKey: boolean, Key: { string }, linkkey: string }? })
 	-- KeySystem xử lý trước GUI
-	if config.KeySystem then
-		local savedKey = nil
-		if config.KeySettings.SaveKey and readfile then
-			pcall(function()
-				savedKey = readfile("carfrost_key.txt")
-			end)
-		end
-
-		if not (savedKey and table.find(config.KeySettings.Key, savedKey)) then
-			local keyGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-			keyGui.Name = "KeySystem"
-
-			local frame = Instance.new("Frame", keyGui)
-			frame.Size = UDim2.new(0, 300, 0, 150)
-			frame.Position = UDim2.new(0.5, -150, 0.5, -75)
-			frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-			Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
-
-			local title = Instance.new("TextLabel", frame)
-			title.Size = UDim2.new(1, 0, 0, 30)
-			title.Position = UDim2.new(0, 0, 0, 0)
-			title.Text = config.KeySettings.Title or "Key Required"
-			title.Font = Enum.Font.GothamBold
-			title.TextSize = 20
-			title.TextColor3 = Color3.new(1, 1, 1)
-			title.BackgroundTransparency = 1
-
-			local textbox = Instance.new("TextBox", frame)
-			textbox.PlaceholderText = "Enter Key Here..."
-			textbox.Size = UDim2.new(0.9, 0, 0, 30)
-			textbox.Position = UDim2.new(0.05, 0, 0, 50)
-			textbox.Text = ""
-			textbox.TextColor3 = Color3.new(1, 1, 1)
-			textbox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-			textbox.ClearTextOnFocus = false
-			textbox.Font = Enum.Font.Gotham
-			textbox.TextSize = 16
-			Instance.new("UICorner", textbox).CornerRadius = UDim.new(0, 6)
-
-			local status = Instance.new("TextLabel", frame)
-			status.Size = UDim2.new(1, 0, 0, 20)
-			status.Position = UDim2.new(0, 0, 0, 90)
-			status.BackgroundTransparency = 1
-			status.TextColor3 = Color3.fromRGB(255, 0, 0)
-			status.Font = Enum.Font.Gotham
-			status.TextSize = 14
-			status.Text = ""
-
-			local submit = Instance.new("TextButton", frame)
-			submit.Size = UDim2.new(0.9, 0, 0, 30)
-			submit.Position = UDim2.new(0.05, 0, 0, 115)
-			submit.Text = "Submit Key"
-			submit.Font = Enum.Font.GothamBold
-			submit.TextSize = 16
-			submit.TextColor3 = Color3.new(1, 1, 1)
-			submit.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-			Instance.new("UICorner", submit).CornerRadius = UDim.new(0, 6)
-
-			submit.MouseButton1Click:Connect(function()
-				local userInput = textbox.Text
-				if table.find(config.KeySettings.Key, userInput) then
-					if config.KeySettings.SaveKey and writefile then
-						pcall(function()
-							writefile("carfrost_key.txt", userInput)
-						end)
-					end
-					keyGui:Destroy()
-				else
-					status.Text = "Invalid Key!"
-				end
-			end)
-
-			repeat task.wait() until not keyGui or not keyGui.Parent
-		end
+if config.KeySystem then
+	local savedKey = nil
+	if config.KeySettings.SaveKey and readfile then
+		pcall(function()
+			savedKey = readfile("carfrost_key.txt")
+		end)
 	end
+
+	if not (savedKey and table.find(config.KeySettings.Key, savedKey)) then
+		local keyGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+		keyGui.Name = "KeySystem"
+
+		local frame = Instance.new("Frame", keyGui)
+		frame.Size = UDim2.new(0, 300, 0, 170)
+		frame.Position = UDim2.new(0.5, -150, 0.5, -85)
+		frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+
+		local title = Instance.new("TextLabel", frame)
+		title.Size = UDim2.new(1, 0, 0, 30)
+		title.Position = UDim2.new(0, 0, 0, 0)
+		title.Text = config.KeySettings.Title or "Key Required"
+		title.Font = Enum.Font.GothamBold
+		title.TextSize = 20
+		title.TextColor3 = Color3.new(1, 1, 1)
+		title.BackgroundTransparency = 1
+
+		local textbox = Instance.new("TextBox", frame)
+		textbox.PlaceholderText = "Enter Key Here..."
+		textbox.Size = UDim2.new(0.9, 0, 0, 30)
+		textbox.Position = UDim2.new(0.05, 0, 0, 40)
+		textbox.Text = ""
+		textbox.TextColor3 = Color3.new(1, 1, 1)
+		textbox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+		textbox.ClearTextOnFocus = false
+		textbox.Font = Enum.Font.Gotham
+		textbox.TextSize = 16
+		Instance.new("UICorner", textbox).CornerRadius = UDim.new(0, 6)
+
+		local status = Instance.new("TextLabel", frame)
+		status.Size = UDim2.new(1, 0, 0, 20)
+		status.Position = UDim2.new(0, 0, 0, 80)
+		status.BackgroundTransparency = 1
+		status.TextColor3 = Color3.fromRGB(255, 0, 0)
+		status.Font = Enum.Font.Gotham
+		status.TextSize = 14
+		status.Text = ""
+
+		-- Submit Button
+		local submit = Instance.new("TextButton", frame)
+		submit.Size = UDim2.new(0.55, 0, 0, 30)
+		submit.Position = UDim2.new(0.05, 0, 0, 110)
+		submit.Text = "Submit Key"
+		submit.Font = Enum.Font.GothamBold
+		submit.TextSize = 16
+		submit.TextColor3 = Color3.new(1, 1, 1)
+		submit.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+		Instance.new("UICorner", submit).CornerRadius = UDim.new(0, 6)
+
+		local bgGradient = Instance.new("UIGradient", submit)
+		bgGradient.Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+		}
+		bgGradient.Rotation = 90
+
+		task.spawn(function()
+			while submit and bgGradient and bgGradient.Parent do
+				for i = 0, 360, 2 do
+					bgGradient.Rotation = i
+					task.wait(0.02)
+				end
+			end
+		end)
+
+		submit.MouseButton1Click:Connect(function()
+			local userInput = textbox.Text
+			if table.find(config.KeySettings.Key, userInput) then
+				if config.KeySettings.SaveKey and writefile then
+					pcall(function()
+						writefile("carfrost_key.txt", userInput)
+					end)
+				end
+				keyGui:Destroy()
+			else
+				status.Text = "Invalid Key!"
+			end
+		end)
+
+		-- Get Key Button
+		local getKey = Instance.new("TextButton", frame)
+		getKey.Size = UDim2.new(0.35, 0, 0, 30)
+		getKey.Position = UDim2.new(0.6, 0, 0, 110)
+		getKey.Text = "Get Key 🔗"
+		getKey.Font = Enum.Font.GothamBold
+		getKey.TextSize = 14
+		getKey.TextColor3 = Color3.new(1, 1, 1)
+		getKey.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+		Instance.new("UICorner", getKey).CornerRadius = UDim.new(0, 6)
+
+		local linkGradient = Instance.new("UIGradient", getKey)
+		linkGradient.Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+		}
+		linkGradient.Rotation = 90
+
+		task.spawn(function()
+			while getKey and linkGradient and linkGradient.Parent do
+				for i = 0, 360, 2 do
+					linkGradient.Rotation = i
+					task.wait(0.02)
+				end
+			end
+		end)
+
+		getKey.MouseButton1Click:Connect(function()
+			if config.KeySettings.linkkey then
+				if setclipboard then
+					setclipboard(config.KeySettings.linkkey)
+				end
+				game:GetService("StarterGui"):SetCore("SendNotification", {
+					Title = "Key Link Copied!",
+					Text = "Paste into your browser.",
+					Duration = 4
+				})
+			end
+		end)
+
+		repeat task.wait() until not keyGui or not keyGui.Parent
+	end
+end
 
 	-- Giao diện GUI chính
 	local screenGui = Instance.new("ScreenGui")
